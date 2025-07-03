@@ -1,0 +1,32 @@
+<?php
+$host = "localhost";
+$user = "root";
+$password = "";
+$database = "webteam_intern";
+
+// 1. Connect to MySQL
+$conn = new mysqli($host, $user, $password, $database);
+
+// 2. Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// 3. Get form data safely
+$name = $_POST['name'];
+$email = $_POST['email'];
+$course = $_POST['course'];
+
+// 4. Insert data using prepared statement
+$stmt = $conn->prepare("INSERT INTO students (name, email, course) VALUES (?, ?, ?)");
+$stmt->bind_param("sss", $name, $email, $course);
+
+if ($stmt->execute()) {
+    echo "<div class='message'>✔️ Registration Successful!</div>";
+} else {
+    echo "<div class='message'>❌ Error: " . $stmt->error . "</div>";
+}
+
+$stmt->close();
+$conn->close();
+?>
